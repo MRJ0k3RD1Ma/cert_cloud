@@ -10,32 +10,42 @@ use yii\bootstrap5\ActiveForm;
 $this->title = 'Login';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="site-login">
-    <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>Please fill out the following fields to login:</p>
+    <section id="account-login" class="flexbox-container">
+        <div class="col-12 d-flex align-items-center justify-content-center">
 
-    <div class="row">
-        <div class="col-lg-5">
-            <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
+            <!-- login form -->
+            <div class="col-xl-3 col-lg-4 col-md-5 col-sm-5 col-12 p-0">
+                <div class="card border-grey border-lighten-3 m-0 box-shadow-0 card-account-right height-400">
+                    <div class="card-content">
+                        <div class="card-body p-3">
+                            <p class="text-center h5 text-capitalize">Sertifikatlar tizimiga xush kelibsiz!</p>
+                            <p class="mb-3 text-center">Login va parollaringizni kiriting</p>
 
-                <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+                            <?php $form = ActiveForm::begin(); ?>
 
-                <?= $form->field($model, 'password')->passwordInput() ?>
+                            <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
 
-                <?= $form->field($model, 'rememberMe')->checkbox() ?>
+                            <?= $form->field($model, 'password')->passwordInput() ?>
 
-                <div class="my-1 mx-0" style="color:#999;">
-                    If you forgot your password you can <?= Html::a('reset it', ['site/request-password-reset']) ?>.
-                    <br>
-                    Need new verification email? <?= Html::a('Resend', ['site/resend-verification-email']) ?>
+                            <?= $form->field($model, 'rememberMe')->checkbox() ?>
+
+                            <button type="submit" class="btn-gradient-primary btn-block my-1">Kirish</button>
+
+
+                            <?php ActiveForm::end(); ?>
+
+
+                        </div>
+                    </div>
                 </div>
-
-                <div class="form-group">
-                    <?= Html::submitButton('Login', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
-                </div>
-
-            <?php ActiveForm::end(); ?>
+            </div>
         </div>
-    </div>
-</div>
+    </section>
+
+
+<style>
+    .mb-3{
+        margin-bottom: 1rem !important;
+    }
+</style>
