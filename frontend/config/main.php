@@ -16,6 +16,7 @@ return [
             'class' => 'frontend\modules\admin\Module',
         ],
     ],
+    'language'=>'uz',
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-frontend',

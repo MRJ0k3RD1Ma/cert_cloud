@@ -10,37 +10,54 @@ use yii\grid\GridView;
 /** @var common\models\search\UserSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Users';
+$this->title = 'Foydalanuvchilar';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <div class="card">
+        <div class="card-content">
+            <div class="card-body">
 
-    <p>
-        <?= Html::a('Create User', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+            <div class="table-responsive">
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+                <p>
+                    <?= Html::a('Foydalanuvchi qo`shish', ['create'], ['class' => 'btn btn-success']) ?>
+                </p>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+                <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-            'id',
-            'name',
-            'username',
-            'password',
-            [
-                'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, User $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
-                 }
-            ],
-        ],
-    ]); ?>
+                <?= GridView::widget([
+                    'dataProvider' => $dataProvider,
+                    'filterModel' => $searchModel,
+                    'columns' => [
+                        ['class' => 'yii\grid\SerialColumn'],
+
+//                        'id',
+//                        'name',
+                        [
+                            'attribute'=>'name',
+                            'value'=>function($d){
+                                $url = Yii::$app->urlManager->createUrl(['/admin/user/view','id'=>$d->id]);
+                                return "<a href='{$url}'>{$d->name}</a>";
+                            },
+                            'format'=>'raw'
+                        ],
+                        'username',
+                        [
+                            'attribute'=>'password',
+                            'value'=>function($d){
+                                return "****";
+                            },
+                            'filter'=>false
+                        ],
+                    ],
+                ]); ?>
+            </div>
+
+            </div>
+        </div>
+    </div>
 
 
 </div>

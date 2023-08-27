@@ -10,40 +10,43 @@ use yii\grid\GridView;
 /** @var common\models\search\CertificateSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Certificates';
+$this->title = 'Sertifikatlar';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="certificate-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <div class="card">
+        <div class="card-content">
+            <div class="card-body">
+                <p>
+                    <?= Html::a('Sertifikat qo`shish', ['/admin'], ['class' => 'btn btn-success']) ?>
+                </p>
 
-    <p>
-        <?= Html::a('Create Certificate', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+                <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+                <?= GridView::widget([
+                    'dataProvider' => $dataProvider,
+                    'filterModel' => $searchModel,
+                    'columns' => [
+                        ['class' => 'yii\grid\SerialColumn'],
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
-            'pin',
-            'word',
-            'pdf',
-            'created',
-            //'updated',
-            //'status',
-            [
-                'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Certificate $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
-                 }
-            ],
-        ],
-    ]); ?>
-
+//                        'id',
+                        'pin',
+                        'word',
+                        'pdf',
+                        'created',
+                        'updated',
+//                        'status',
+                        [
+                            'class' => ActionColumn::className(),
+                            'urlCreator' => function ($action, Certificate $model, $key, $index, $column) {
+                                return Url::toRoute([$action, 'id' => $model->id]);
+                            }
+                        ],
+                    ],
+                ]); ?>
+            </div>
+        </div>
+    </div>
 
 </div>

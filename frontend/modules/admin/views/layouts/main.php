@@ -35,6 +35,9 @@ BackAsset::register($this);
 <div class="app-content content">
     <div class="content-wrapper">
         <div class="content-header row">
+            <?= Breadcrumbs::widget([
+                'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+            ]) ?>
         </div>
         <div class="content-body"><!-- ICO Token &  Distribution-->
 

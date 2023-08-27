@@ -11,6 +11,8 @@ use Yii;
  * @property int|null $pin
  * @property string|null $word
  * @property string|null $pdf
+ * @property string|null $url
+ * @property string|null $url_qr
  * @property string|null $created
  * @property string|null $updated
  * @property int|null $status
@@ -31,9 +33,11 @@ class Certificate extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['pin','url','word'],'required'],
             [['pin', 'status'], 'integer'],
             [['created', 'updated'], 'safe'],
-            [['word', 'pdf'], 'string', 'max' => 255],
+            ['url','url'],
+            [['word', 'pdf','url','url_qr'], 'string', 'max' => 255],
         ];
     }
 
@@ -44,11 +48,13 @@ class Certificate extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'pin' => 'Pin',
-            'word' => 'Word',
-            'pdf' => 'Pdf',
-            'created' => 'Created',
-            'updated' => 'Updated',
+            'pin' => 'PIN',
+            'word' => 'WORD',
+            'pdf' => 'PDF',
+            'url' => 'Certificate.standat.uz manzili',
+            'url_qr' => 'QR kod',
+            'created' => 'Kiritildi',
+            'updated' => 'O`zgartirildi',
             'status' => 'Status',
         ];
     }
