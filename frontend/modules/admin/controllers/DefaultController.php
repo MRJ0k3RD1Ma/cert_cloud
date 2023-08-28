@@ -29,7 +29,7 @@ class DefaultController extends Controller
                     mkdir(Yii::$app->basePath.'/web/upload/'.$year.'/'.$month, 0777, true);
                 }
                 $model->word->saveAs(Yii::$app->basePath.'/web/upload/'.$year.'/'.$month.'/'.$name.'.'.$ext);
-                $model->word = $name.'.'.$ext;
+
 
                 // generate word
                 $domPdfPath = realpath(Yii::$app->vendorPath.'/mpdf/mpdf');
@@ -38,19 +38,25 @@ class DefaultController extends Controller
 
                 Settings::setPdfRendererName('MPDF');
 
-                $Content = \PhpOffice\PhpWord\IOFactory::load(Yii::$app->basePath.'/web/upload/'.$year.'/'.$month.'/'.$name.'.'.$ext);
-//                $Content->setDefaultFontName('times new roman');
-                //Save it into PDF
-                $PDFWriter = \PhpOffice\PhpWord\IOFactory::createWriter($Content,'PDF');
-                $PDFWriter->save(Yii::$app->basePath.'/web/upload/'.$year.'/'.$month.'/'.$name.'.pdf');
+                $content = \PhpOffice\PhpWord\IOFactory::load(Yii::$app->basePath.'/web/upload/'.$year.'/'.$month.'/'.$name.'.'.$ext);
 
-//                $Content =  new \PhpOffice\PhpWord\TemplateProcessor(Yii::$app->basePath.'/web/upload/'.$year.'/'.$month.'/'.$name.'.'.$ext);
-//                $Content->saveAs(Yii::$app->basePath.'/web/upload/'.$year.'/'.$month.'/'.$name.'-1.'.$ext);
+                $PDFWriter = \PhpOffice\PhpWord\IOFactory::createWriter($content,'PDF');
+                \PhpOffice\PhpWord\Settings::setOutputEscapingEnabled(false);
+                $PDFWriter->save(Yii::$app->basePath.'/web/upload/'.$year.'/'.$month.'/'.$name.'.pdf');
+                //            10.05sm x 15.61sm
+
 
 //                Yii::$app->response->sendFile(Yii::$app->basePath.'/web/upload/'.$year.'/'.$month.'/'.$name.'.pdf');
+
+//                $phpWord = \PhpOffice\PhpWord\IOFactory::load(Yii::$app->basePath.'/web/upload/'.$year.'/'.$month.'/'.$name.'.'.$ext);
+//                $htmlWriter = new \PhpOffice\PhpWord\Writer\HTML($phpWord);
+//                $htmlWriter->save(Yii::$app->basePath.'/web/upload/'.$year.'/'.$month.'/'.$name.'.html');
+
+
                 $model->word = $year.'/'.$month.'/'.$name.'.'.$ext;
                 $model->pdf = $year.'/'.$month.'/'.$name.'.pdf';
             }
+
 
             if($model->save()){
                 Yii::$app->session->setFlash('success','Fayl muvoffaqiyatli saqlandi');
