@@ -2,8 +2,10 @@
 
 namespace frontend\controllers;
 
+use common\models\Certificate;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
+use setasign\Fpdi\PdfParser\Type\PdfName;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
@@ -75,7 +77,29 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $model = new Certificate();
+        $model->scenario = 'check';
+        if($this->request->isPost and $model->load($this->request->post())){
+            if($pdf = Certificate::findOne(['pin'=>$model->pin])){
+                return $this->redirect(['view','id'=>$pdf->pin]);
+            }else{
+                Yii::$app->session->setFlash('error','error');
+                return $this->redirect(['index']);
+            }
+
+        }
+        return $this->render('index',['model'=>$model]);
+    }
+
+    public function actionLetterSearch(){
+        $this->layout = "empty";
+        return $this->render('letter-search');
+    }
+
+    public function actionView($id){
+        $model = Certificate::findOne(['pin'=>$id]);
+        Yii::$app->response->sendFile(Yii::$app->basePath.'/web/upload/'.$model->pdf, 'doc_'.date('Y-m-d_h-i-s').'.pdf', [ 'inline'=>true]);
+
     }
 
     /**

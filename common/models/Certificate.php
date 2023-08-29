@@ -33,7 +33,8 @@ class Certificate extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['pin','url','word'],'required'],
+            [['pin','pdf'],'required','on'=>'insert'],
+            [['pin'],'required','on'=>'check'],
             [['pin', 'status'], 'integer'],
             [['created', 'updated'], 'safe'],
             ['url','url'],
@@ -47,7 +48,7 @@ class Certificate extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'id' => 'PIN',
             'pin' => 'PIN',
             'word' => 'WORD',
             'pdf' => 'PDF',

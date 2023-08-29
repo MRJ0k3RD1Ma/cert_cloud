@@ -7,6 +7,13 @@ use PhpOffice\PhpWord\Settings;
 use yii\web\Controller;
 use yii\web\UploadedFile;
 use Yii;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
+use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
+use Endroid\QrCode\Label\Font\NotoSans;
+use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
+use Endroid\QrCode\Writer\PngWriter;
 /**
  * Default controller for the `admin` module
  */
@@ -19,6 +26,12 @@ class DefaultController extends Controller
     public function actionIndex()
     {
         $model = new Certificate();
+
+        $model->pin = Certificate::find()->max('id');
+        if(!$model->pin){
+            $model->pin = 0;
+        }
+        $model->pin ++;
         if($model->load($this->request->post())){
             if($model->word = UploadedFile::getInstance($model,'word')){
                 $name = microtime(true);
@@ -30,33 +43,23 @@ class DefaultController extends Controller
                 }
                 $model->word->saveAs(Yii::$app->basePath.'/web/upload/'.$year.'/'.$month.'/'.$name.'.'.$ext);
 
-
-                // generate word
-                $domPdfPath = realpath(Yii::$app->vendorPath.'/mpdf/mpdf');
-
-                Settings::setPdfRendererPath($domPdfPath);
-
-                Settings::setPdfRendererName('MPDF');
-
-                $content = \PhpOffice\PhpWord\IOFactory::load(Yii::$app->basePath.'/web/upload/'.$year.'/'.$month.'/'.$name.'.'.$ext);
-
-                $PDFWriter = \PhpOffice\PhpWord\IOFactory::createWriter($content,'PDF');
-                \PhpOffice\PhpWord\Settings::setOutputEscapingEnabled(false);
-                $PDFWriter->save(Yii::$app->basePath.'/web/upload/'.$year.'/'.$month.'/'.$name.'.pdf');
-                //            10.05sm x 15.61sm
-
-
-//                Yii::$app->response->sendFile(Yii::$app->basePath.'/web/upload/'.$year.'/'.$month.'/'.$name.'.pdf');
-
-//                $phpWord = \PhpOffice\PhpWord\IOFactory::load(Yii::$app->basePath.'/web/upload/'.$year.'/'.$month.'/'.$name.'.'.$ext);
-//                $htmlWriter = new \PhpOffice\PhpWord\Writer\HTML($phpWord);
-//                $htmlWriter->save(Yii::$app->basePath.'/web/upload/'.$year.'/'.$month.'/'.$name.'.html');
-
-
                 $model->word = $year.'/'.$month.'/'.$name.'.'.$ext;
-                $model->pdf = $year.'/'.$month.'/'.$name.'.pdf';
+            }
+            if($model->pdf = UploadedFile::getInstance($model,'pdf')){
+                $name = microtime(true);
+                $ext = $model->pdf->extension;
+                $year = date('Y');
+                $month = date('m');
+                if(!file_exists(Yii::$app->basePath.'/web/upload/'.$year.'/'.$month)){
+                    mkdir(Yii::$app->basePath.'/web/upload/'.$year.'/'.$month, 0777, true);
+                }
+                $model->pdf->saveAs(Yii::$app->basePath.'/web/upload/'.$year.'/'.$month.'/'.$name.'.'.$ext);
+
+                $model->pdf = $year.'/'.$month.'/'.$name.'.'.$ext;
             }
 
+            $model->url = Yii::$app->urlManager->createAbsoluteUrl(['/site/view','id'=>$model->pin]);
+            $model->url_qr = Yii::$app->urlManager->createAbsoluteUrl(['/site/view','id'=>$model->pin]);
 
             if($model->save()){
                 Yii::$app->session->setFlash('success','Fayl muvoffaqiyatli saqlandi');
@@ -71,5 +74,31 @@ class DefaultController extends Controller
         return $this->render('index',[
             'model'=>$model
         ]);
+    }
+
+
+    public function actionQr($pin,$down = false){
+
+        $qr = function() use ($pin) {
+            $data=Builder::create()
+                ->writer(new PngWriter())
+                ->writerOptions([])
+                ->data(Yii::$app->urlManager->createAbsoluteUrl(['/site/view','id'=>$pin]))
+                ->encoding(new Encoding('UTF-8'))
+                ->errorCorrectionLevel(new ErrorCorrectionLevelHigh())
+                ->size(200)
+                ->margin(3)
+                ->roundBlockSizeMode(new RoundBlockSizeModeMargin())
+//        ->logoPath(Yii::$app->basePath."/web/favicon.png")
+                ->labelText('')
+                ->labelFont(new NotoSans(20))
+                ->labelAlignment(new LabelAlignmentCenter())
+                ->build();
+
+            return $data->getDataUri();
+        };
+        $img = $qr();
+
+        return $img;
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 /** @var \yii\web\View $this */
+
 /** @var string $content */
 
 use common\widgets\Alert;
@@ -13,72 +14,161 @@ use yii\bootstrap5\NavBar;
 AppAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
-<!DOCTYPE html>
-<html lang="<?= Yii::$app->language ?>" class="h-100">
-<head>
-    <meta charset="<?= Yii::$app->charset ?>">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <?php $this->registerCsrfMetaTags() ?>
-    <title><?= Html::encode($this->title) ?></title>
-    <?php $this->head() ?>
-</head>
-<body class="d-flex flex-column h-100">
-<?php $this->beginBody() ?>
+    <!DOCTYPE html>
+    <html lang="<?= Yii::$app->language ?>" class="h-100">
+    <head>
+        <meta charset="<?= Yii::$app->charset ?>">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="icon" type="image/png" href="/favicon.png">
+        <?php $this->registerCsrfMetaTags() ?>
+        <title><?= Html::encode($this->title) ?></title>
+        <?php $this->head() ?>
 
-<header>
-    <?php
-    NavBar::begin([
-        'brandLabel' => Yii::$app->name,
-        'brandUrl' => Yii::$app->homeUrl,
-        'options' => [
-            'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
-        ],
-    ]);
-    $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
-        ['label' => 'About', 'url' => ['/site/about']],
-        ['label' => 'Contact', 'url' => ['/site/contact']],
-    ];
-    if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
-    }
 
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav me-auto mb-2 mb-md-0'],
-        'items' => $menuItems,
-    ]);
-    if (Yii::$app->user->isGuest) {
-        echo Html::tag('div',Html::a('Login',['/site/login'],['class' => ['btn btn-link login text-decoration-none']]),['class' => ['d-flex']]);
-    } else {
-        echo Html::beginForm(['/site/logout'], 'post', ['class' => 'd-flex'])
-            . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username . ')',
-                ['class' => 'btn btn-link logout text-decoration-none']
-            )
-            . Html::endForm();
-    }
-    NavBar::end();
-    ?>
-</header>
+        <style>
+            p {
+                margin: 0;
+            }
 
-<main role="main" class="flex-shrink-0">
-    <div class="container">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
-        <?= Alert::widget() ?>
-        <?= $content ?>
+            .dogs-title {
+                font-size: 120%;
+                font-weight: bold;
+                margin-bottom: 15px;
+            }
+
+            .dogs-title-border::after {
+                margin-top: 10px;
+                display: block;
+                content: "";
+                width: 70px;
+                border-top: 3px solid #CC3304;
+            }
+
+            .add-pet-wrap {
+                position: relative;
+                height: 232px;
+                text-align: center;
+                border: 1px dashed #777;
+                border-radius: 4px;
+            }
+
+            .add-pet-wrap .add-pet-content {
+                position: relative;
+                top: 50%;
+                -webkit-transform: translateY(-50%);
+                transform: translateY(-50%);
+            }
+
+            .col-center {
+                float: none;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            label {
+                margin: 0;
+            }
+
+            .app-profile-menu {
+                border-bottom: 1px solid #DDDDDD;
+                padding: 10px;
+            }
+
+            #apporgans-address,
+            #apponline-additional_information,
+            #apponline-rejection_reason {
+                resize: none;
+            }
+
+            .select2-container .select2-selection--single {
+                height: 34px;
+                border-radius: 17px;
+            }
+
+            .select2-container--default .select2-selection--single .select2-selection__rendered {
+                line-height: 34px;
+                padding-left: 20px;
+                font-size: 14px;
+            }
+
+            .select2-results__option {
+                font-size: 14px;
+            }
+
+            .select2-container--default .select2-selection--single .select2-selection__arrow {
+                top: 5px;
+            }
+
+            .field-apponline-production_type_one,
+            .field-apponline-production_type_two,
+            .app-nd-file {
+                display: none;
+            }
+
+            .input-group-addon {
+                border-radius: 0 17px 17px 0;
+            }
+
+            .sweet-alert .sa-button-container .confirm {
+                color: #fff !important;
+                background-color: #337ab7 !important;
+                border-color: #2e6da4 !important;
+            }
+
+            .sweet-alert .sa-button-container .cancel {
+                color: #fff !important;
+                background-color: #c9302c !important;
+                border-color: #ac2925 !important;
+            }
+
+            .table-bordered > tbody > tr > th {
+                width: 50%;
+            }
+        </style>
+
+
+    </head>
+    <body>
+    <?php $this->beginBody() ?>
+
+
+    <div class="wrap">
+        <nav id="w0" class="navbar-inverse navbar-fixed-top navbar">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#w0-collapse"><span
+                                class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span></button>
+                    <a class="navbar-brand" href="/"><span class="glyphicon glyphicon-file"
+                                                           style="color: rgb(0, 75, 150); font-size: 30px; vertical-align: middle;"></span>
+                        certificate.standart.uz</a></div>
+                <div id="w0-collapse" class="collapse navbar-collapse">
+                    <ul id="w1" class="navbar-nav navbar-right nav">
+                        <li><a href="https://standart.uz">
+                                <div>Агентство «УЗСТАНДАРТ»</div>
+                            </a></li>
+                        <li><a href="/site/letter-search">
+                                <div>Письмо</div>
+                            </a></li>
+                        <li><a href="/site/decision-search">
+                                <div>Решение</div>
+                            </a></li>
+                        <li><a href="/site/decision-cement-search">
+                                <div>Решение(Цемент)</div>
+                            </a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="container">
+            <?= $content?>
+        </div>
     </div>
-</main>
 
-<footer class="footer mt-auto py-3 text-muted">
-    <div class="container">
-        <p class="float-start">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
-        <p class="float-end"><?= Yii::powered() ?></p>
-    </div>
-</footer>
 
-<?php $this->endBody() ?>
-</body>
-</html>
+    <?php $this->endBody() ?>
+    </body>
+    </html>
 <?php $this->endPage();
