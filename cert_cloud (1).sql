@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 24, 2023 at 09:16 PM
+-- Generation Time: Aug 29, 2023 at 06:34 AM
 -- Server version: 10.4.25-MariaDB
 -- PHP Version: 7.4.30
 
@@ -34,7 +34,9 @@ CREATE TABLE `certificate` (
   `pdf` varchar(255) DEFAULT NULL,
   `created` datetime DEFAULT current_timestamp(),
   `updated` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `status` int(11) DEFAULT 1
+  `status` int(11) DEFAULT 1,
+  `url` varchar(255) DEFAULT NULL,
+  `url_qr` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -49,6 +51,13 @@ CREATE TABLE `user` (
   `username` varchar(255) DEFAULT NULL,
   `password` varchar(500) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`id`, `name`, `username`, `password`) VALUES
+(1, 'Dilmurod', 'admin', '$2y$13$cW4FDIl.S5zCEEAl4we0FuRahZRLtTQYUz4nUHcX2k2bz6yZ9kTyy');
 
 --
 -- Indexes for dumped tables
@@ -81,7 +90,7 @@ ALTER TABLE `certificate`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
